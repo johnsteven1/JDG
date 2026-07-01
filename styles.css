@@ -1,0 +1,26 @@
+.map-card {
+  border: 1px solid #ccc;
+  border-radius: 3px;
+  padding: 4px;
+  min-width: 200px;
+
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  background-color: rgba(255, 255, 255, 0.3);
+  text-align: center;
+
+  margin: 20px auto; /* centers the card */
+  width: fit-content;
+}
+
+.map-card img {
+  width: 100%;
+  height: auto;
+  border-radius: 7px;
+  display: block;
+  margin-bottom: 7px;
+}
+
+.map-label {
+  font-size: 10px;
+  color: #222;
+}
