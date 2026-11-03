@@ -105,6 +105,10 @@ body{
     justify-content:center;
     font-size:24px;
     color:#fff;
+    border:0;
+    padding:0;
+    cursor:pointer;
+    flex-shrink:0;
 }
 
 .balance-section{
@@ -218,6 +222,23 @@ body{
     display:flex;
     justify-content:space-between;
     align-items:center;
+    gap:12px;
+}
+
+.cash-left{
+    min-width:0;
+    flex:1 1 auto;
+}
+
+.cash-name{
+    min-width:0;
+}
+
+.cash-right,
+.usd-cash-right{
+    flex:0 0 auto;
+    text-align:right;
+    white-space:nowrap;
 }
 
 .cash-left{
@@ -354,6 +375,11 @@ body{
     line-height:1.4;
 }
 
+.balance-masked{
+    letter-spacing:1px;
+    white-space:nowrap;
+}
+
 /* CRYPTO PAGE */
 
 .wallet-actions{
@@ -387,7 +413,32 @@ body{
     display:flex;
     justify-content:space-between;
     align-items:center;
+    gap:12px;
     margin-bottom:20px;
+}
+
+.coin-left{
+    min-width:0;
+    flex:1 1 auto;
+}
+
+.coin-name{
+    min-width:0;
+}
+
+.coin-right{
+    flex:0 0 auto;
+    min-width:86px;
+    text-align:right;
+    display:flex;
+    flex-direction:column;
+    align-items:flex-end;
+}
+
+.coin-right h4,
+.coin-right p{
+    white-space:nowrap;
+    line-height:1.4;
 }
 
 .coin-row:last-child{
@@ -983,12 +1034,14 @@ TRANSACTION RECEIPT
     white-space:nowrap;
 }
 
+/* REDUCED PIN INDICATOR SPACING */
+
 .pin-indicators{
     display:flex;
     justify-content:center;
     align-items:center;
     gap:15px;
-    margin-top:85px;
+    margin-top:65px;
 }
 
 .pin-dot{
@@ -1004,15 +1057,17 @@ TRANSACTION RECEIPT
     transform:scale(1.05);
 }
 
+/* REDUCED PIN KEYPAD SIZE AND SPACING */
+
 .pin-keypad{
     width:100%;
-    max-width:300px;
+    max-width:290px;
     display:grid;
     grid-template-columns:repeat(3,minmax(0,1fr));
     column-gap:20px;
-    row-gap:17px;
+    row-gap:15px;
     margin-top:auto;
-    margin-bottom:28px;
+    margin-bottom:22px;
 }
 
 .pin-key{
@@ -1108,7 +1163,7 @@ TRANSACTION RECEIPT
 
     .pin-indicators{
         gap:15px;
-        margin-top:85px;
+        margin-top:65px;
     }
 
     .pin-dot{
@@ -1117,14 +1172,15 @@ TRANSACTION RECEIPT
     }
 
     .pin-keypad{
-        max-width:300px;
+        max-width:290px;
         column-gap:20px;
-        row-gap:17px;
-        margin-bottom:28px;
+        row-gap:15px;
+        margin-bottom:22px;
     }
 
     .pin-key{
         font-size:22px;
+        border-radius:50%;
     }
 
     .bottom-navigation{
@@ -1180,6 +1236,13 @@ TRANSACTION RECEIPT
     .nav-label{
         font-size:10px;
     }
+
+    .pin-keypad{
+        max-width:270px;
+        column-gap:18px;
+        row-gap:14px;
+        margin-bottom:19px;
+    }
 }
 
 @media(max-height:700px){
@@ -1207,14 +1270,15 @@ TRANSACTION RECEIPT
     }
 
     .pin-keypad{
-        max-width:260px;
-        column-gap:17px;
+        max-width:255px;
+        column-gap:16px;
         row-gap:12px;
-        margin-bottom:20px;
+        margin-bottom:16px;
     }
 
     .pin-key{
         font-size:20px;
+        border-radius:50%;
     }
 
     .pin-logout{
@@ -1256,9 +1320,9 @@ TRANSACTION RECEIPT
                 <i class="fa-solid fa-magnifying-glass"></i>
             </div>
 
-            <div class="circle-icon">
-                <i class="fa-regular fa-eye"></i>
-            </div>
+            <button class="circle-icon" id="balanceVisibilityToggle" type="button" aria-label="Hide balances" aria-pressed="false">
+                <i class="fa-regular fa-eye" aria-hidden="true"></i>
+            </button>
 
             <div class="circle-icon">
                 <i class="fa-regular fa-bell"></i>
@@ -1455,8 +1519,6 @@ TRANSACTION RECEIPT
             <i class="fa-solid fa-chevron-right" style="color:#1ee66f"></i>
         </div>
 
-        <!-- SENT XRP: CLICK TO OPEN RECEIPT -->
-
         <div class="transaction-item"
              onclick="openReceipt('sent')"
              role="button"
@@ -1480,8 +1542,6 @@ TRANSACTION RECEIPT
             </div>
 
         </div>
-
-        <!-- BOUGHT XRP: CLICK TO OPEN RECEIPT -->
 
         <div class="transaction-item"
              onclick="openReceipt('bought')"
@@ -1615,116 +1675,115 @@ TRANSACTION RECEIPT
 </div>
 </div>
 
-<!-- =========================================
-RECEIPT SCREEN
-========================================= -->
+<!-- RECEIPT SCREEN -->
 
 <div id="receiptScreen">
 
-    <main id="receipt">
+<main id="receipt">
 
-        <div class="top">
+    <div class="top">
 
-            <button class="circle" onclick="closeReceipt()" aria-label="Back">
-                <img class="icon" alt="Back"
-                src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M19 12H5M12 19l-7-7 7-7'/%3E%3C/svg%3E">
-            </button>
+        <button class="circle" onclick="closeReceipt()" aria-label="Back">
+            <img class="icon" alt="Back"
+            src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M19 12H5M12 19l-7-7 7-7'/%3E%3C/svg%3E">
+        </button>
 
-            <button class="circle" onclick="shareReceipt()" aria-label="Share">
-                <img class="icon" alt="Share"
-                src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M12 16V3m-5 5 5-5 5 5M5 13v7h14v-7'/%3E%3C/svg%3E">
-            </button>
+        <button class="circle" onclick="shareReceipt()" aria-label="Share">
+            <img class="icon" alt="Share"
+            src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M12 16V3m-5 5 5-5 5 5M5 13v7h14v-7'/%3E%3C/svg%3E">
+        </button>
 
+    </div>
+
+    <section class="heading">
+
+        <div>
+            <h1 id="receiptAmount">-1.95 XRP</h1>
+            <p class="sub" id="receiptType">Sent XRP</p>
+            <p class="sub" id="receiptDate">Feb 4, 2026, 11:31 AM</p>
         </div>
 
-        <section class="heading">
+        <div class="logo">
+            <img src="file_000000009fdc72468f66831dd3665405.png" alt="XRP Logo">
+        </div>
 
-            <div>
-                <h1 id="receiptAmount">-1.95 XRP</h1>
-                <p class="sub" id="receiptType">Sent XRP</p>
-                <p class="sub" id="receiptDate">Feb 4, 2026, 11:31 AM</p>
-            </div>
+    </section>
 
-            <div class="logo">
-                <img src="file_000000009fdc72468f66831dd3665405.png" alt="XRP Logo">
-            </div>
+    <section class="receipt-card">
 
-        </section>
+        <div class="row">
+            <span class="label">Status</span>
+            <span class="status" id="receiptStatus">Completed</span>
+        </div>
 
-        <section class="receipt-card">
+        <div class="row">
+            <span class="label">Amount</span>
+            <span class="value" id="receiptAmountDetail">2.2 XRP</span>
+        </div>
 
-            <div class="row">
-                <span class="label">Status</span>
-                <span class="status" id="receiptStatus">Completed</span>
-            </div>
+        <div class="row">
+            <span class="label">Fee</span>
+            <span class="value" id="receiptFee">0.25 XRP</span>
+        </div>
 
-            <div class="row">
-                <span class="label">Amount</span>
-                <span class="value" id="receiptAmountDetail">2.2 XRP</span>
-            </div>
+        <div class="line"></div>
 
-            <div class="row">
-                <span class="label">Fee</span>
-                <span class="value" id="receiptFee">0.25 XRP</span>
-            </div>
+        <div class="row">
+            <span class="label">Reference</span>
 
-            <div class="line"></div>
+            <span class="value">
+                <span id="receiptReference">PYOT_AWstelmNOI</span>
 
-            <div class="row">
-                <span class="label">Reference</span>
+                <button class="copy" onclick="copyReceiptReference()" aria-label="Copy reference">
+                    <img alt="Copy"
+                    src="file_00000000d7b481f49d52e53b3b9b10a3.png">
+                </button>
+            </span>
+        </div>
 
-                <span class="value">
-                    <span id="receiptReference">PYOT_AWstelmNOI</span>
+    </section>
 
-                    <button class="copy" onclick="copyReceiptReference()" aria-label="Copy reference">
-                        <img alt="Copy"
-                        src="file_00000000d7b481f49d52e53b3b9b10a3.png">
-                    </button>
-                </span>
-            </div>
+    <section class="receipt-card">
 
-        </section>
+        <div class="row">
+            <span class="label">Hash</span>
+            <span class="value green" id="receiptHash">8738279A...6C80F</span>
+        </div>
 
-        <section class="receipt-card">
+        <div class="row">
+            <span class="label">Wallet address</span>
+            <span class="value green" id="receiptAddress">rGDreBvn...4GzFn</span>
+        </div>
 
-            <div class="row">
-                <span class="label">Hash</span>
-                <span class="value green" id="receiptHash">8738279A...6C80F</span>
-            </div>
+        <div class="row">
+            <span class="label">Destination tag</span>
+            <span class="value" id="receiptTag">707764596</span>
+        </div>
 
-            <div class="row">
-                <span class="label">Wallet address</span>
-                <span class="value green" id="receiptAddress">rGDreBvn...4GzFn</span>
-            </div>
+        <div class="row">
+            <span class="label">Network</span>
 
-            <div class="row">
-                <span class="label">Destination tag</span>
-                <span class="value" id="receiptTag">707764596</span>
-            </div>
+            <span class="value network">
+                <img alt="XRP Network"
+                src="file_00000000c758820c92c1de84625cd38d.png">
+                Ripple
+            </span>
+        </div>
 
-            <div class="row">
-                <span class="label">Network</span>
+    </section>
 
-                <span class="value network">
-                    <img alt="XRP Network"
-                    src="file_00000000c758820c92c1de84625cd38d.png">
-                    Ripple
-                </span>
-            </div>
+    <button class="help" onclick="receiptNotify('No live support')">
+        Get help
+        <span class="arrow">›</span>
+    </button>
 
-        </section>
+    <canvas id="canvas" width="#" height="1"></canvas>
 
-        <button class="help" onclick="receiptNotify('No live support')">
-            Get help
-            <span class="arrow">›</span>
-        </button>
-                 
-        <canvas id="canvas" width = "#" height = "1"></canvas>
-        <button class="download" onclick="downloadReceipt()">
-            Download
-        </button>
+    <button class="download" onclick="downloadReceipt()">
+        Download
+    </button>
 
-    </main>
+</main>
 
 </div>
 
@@ -1734,67 +1793,65 @@ RECEIPT SCREEN
 
 <div class="pin-overlay" id="pinOverlay">
 
-    <main class="pin-screen">
+<main class="pin-screen">
 
-        <div class="pin-greeting">
-            <h1>Hi, Steven</h1>
-            <p>Enter your PIN to unlock Busha</p>
-        </div>
+    <div class="pin-greeting">
+        <h1>Hi, Steven</h1>
+        <p>Enter your PIN to unlock Busha</p>
+    </div>
 
-        <div class="pin-indicators" id="pinDots">
-            <div class="pin-dot"></div>
-            <div class="pin-dot"></div>
-            <div class="pin-dot"></div>
-            <div class="pin-dot"></div>
-        </div>
+    <div class="pin-indicators" id="pinDots">
+        <div class="pin-dot"></div>
+        <div class="pin-dot"></div>
+        <div class="pin-dot"></div>
+        <div class="pin-dot"></div>
+    </div>
 
-        <div class="pin-keypad" id="pinKeypad">
+    <div class="pin-keypad" id="pinKeypad">
 
-            <button class="pin-key" data-key="1">1</button>
-            <button class="pin-key" data-key="2">2</button>
-            <button class="pin-key" data-key="3">3</button>
+        <button class="pin-key" data-key="1">1</button>
+        <button class="pin-key" data-key="2">2</button>
+        <button class="pin-key" data-key="3">3</button>
 
-            <button class="pin-key" data-key="4">4</button>
-            <button class="pin-key" data-key="5">5</button>
-            <button class="pin-key" data-key="6">6</button>
+        <button class="pin-key" data-key="4">4</button>
+        <button class="pin-key" data-key="5">5</button>
+        <button class="pin-key" data-key="6">6</button>
 
-            <button class="pin-key" data-key="7">7</button>
-            <button class="pin-key" data-key="8">8</button>
-            <button class="pin-key" data-key="9">9</button>
+        <button class="pin-key" data-key="7">7</button>
+        <button class="pin-key" data-key="8">8</button>
+        <button class="pin-key" data-key="9">9</button>
 
-            <button class="pin-key" id="pinBackspace" aria-label="Backspace">
-                <svg class="backspace-icon" viewBox="0 0 48 48">
-                    <path d="M23 9 L9 24 L23 39"></path>
-                    <path d="M10 24 H39"></path>
-                </svg>
-            </button>
+        <button class="pin-key" id="pinBackspace" aria-label="Backspace">
+            <svg class="backspace-icon" viewBox="0 0 48 48">
+                <path d="M23 9 L9 24 L23 39"></path>
+                <path d="M10 24 H39"></path>
+            </svg>
+        </button>
 
-            <button class="pin-key" data-key="0">0</button>
+        <button class="pin-key" data-key="0">0</button>
 
-            <button class="pin-key" id="pinFingerprint" aria-label="Fingerprint">
-                <img class="fingerprint-icon" src="exact_icon_transparent.png" alt="Fingerprint" draggable="false">
-            </button>
+        <button class="pin-key" id="pinFingerprint" aria-label="Fingerprint">
+            <img class="fingerprint-icon" src="exact_icon_transparent.png" alt="Fingerprint" draggable="false">
+        </button>
 
-        </div>
+    </div>
 
-        <div class="pin-logout">
-            Not Steven?
-            <a href="#" id="pinLogout">Log out</a>
-        </div>
+    <div class="pin-logout">
+        Not Steven?
+        <a href="#" id="pinLogout">Log out</a>
+    </div>
 
-        <div class="pin-message" id="pinMessage">
-            Prototype only
-        </div>
+    <div class="pin-message" id="pinMessage">
+        Prototype only
+    </div>
 
-    </main>
+</main>
 
 </div>
 
 <script>
 
-/* =========================================
-USD TO NGN CONVERSION
-========================================= */
+/* USD TO NGN CONVERSION */
 
 const USD_AMOUNT = 0;
 const USD_TO_NGN_RATE = 1500;
@@ -1825,9 +1882,83 @@ function updateUSDBalance(usdAmount,exchangeRate){
 updateUSDBalance(USD_AMOUNT,USD_TO_NGN_RATE);
 
 
-/* =========================================
-PAGE NAVIGATION
-========================================= */
+/* GLOBAL BALANCE VISIBILITY */
+
+let balancesHidden = false;
+
+const balanceVisibilityToggle = document.getElementById('balanceVisibilityToggle');
+const balanceVisibilityIcon = balanceVisibilityToggle?.querySelector('i');
+
+const balanceValueSelectors = [
+    '.balance',
+    '.cash-right',
+    '.usd-cash-right > span',
+    '.usd-cash-right > small',
+    '.coin-right h4',
+    '.coin-right p',
+    '.transaction-right h4',
+    '.transaction-right p',
+    '.bill-text h3'
+];
+
+function getBalanceValueElements(){
+    return document.querySelectorAll(balanceValueSelectors.join(','));
+}
+
+function applyBalanceVisibility(){
+    getBalanceValueElements().forEach(element => {
+        if (!element.hasAttribute('data-original-balance')) {
+            element.setAttribute('data-original-balance', element.textContent);
+        }
+
+        const desiredText = balancesHidden
+            ? '******'
+            : element.getAttribute('data-original-balance');
+
+        if (element.textContent !== desiredText) {
+            element.textContent = desiredText;
+        }
+
+        element.classList.toggle('balance-masked', balancesHidden);
+    });
+
+    if (balanceVisibilityIcon) {
+        balanceVisibilityIcon.className = balancesHidden
+            ? 'fa-regular fa-eye-slash'
+            : 'fa-regular fa-eye';
+    }
+
+    if (balanceVisibilityToggle) {
+        balanceVisibilityToggle.setAttribute(
+            'aria-label',
+            balancesHidden ? 'Show balances' : 'Hide balances'
+        );
+
+        balanceVisibilityToggle.setAttribute(
+            'aria-pressed',
+            String(balancesHidden)
+        );
+    }
+}
+
+if (balanceVisibilityToggle) {
+    balanceVisibilityToggle.addEventListener('click', () => {
+        balancesHidden = !balancesHidden;
+        applyBalanceVisibility();
+    });
+}
+
+const balanceVisibilityObserver = new MutationObserver(() => {
+    if (balancesHidden) applyBalanceVisibility();
+});
+
+balanceVisibilityObserver.observe(document.body, {
+    childList:true,
+    subtree:true
+});
+
+
+/* PAGE NAVIGATION */
 
 const navItems = document.querySelectorAll(
     '.bottom-navigation .nav-item'
@@ -1861,62 +1992,40 @@ function showPage(pageId){
 }
 
 navItems.forEach(item=>{
-
     item.addEventListener('click',()=>{
-
         showPage(item.dataset.page);
-
     });
-
 });
 
 
-/* =========================================
-TRANSACTION RECEIPT DATA
-========================================= */
+/* TRANSACTION RECEIPT DATA */
 
 const receiptTransactions = {
 
     sent:{
-
         amount:'-1.95 XRP',
         type:'Sent XRP',
         date:'Feb 4, 2026, 11:31 AM',
-
         status:'Completed',
-
         detailAmount:'2.2 XRP',
         fee:'0.25 XRP',
-
         reference:'PYOT_AWstelmNOI',
-
         hash:'8738279A...6C80F',
-
         address:'rGDreBvn...4GzFn',
-
         tag:'707764596'
-
     },
 
     bought:{
-
         amount:'+2.3 XRP',
         type:'Bought XRP',
         date:'May 8, 2026',
-
         status:'Completed',
-
         detailAmount:'2.3 XRP',
         fee:'0 XRP',
-
         reference:'BUY_XRP_230',
-
         hash:'Not available',
-
         address:'Not available',
-
         tag:'Not applicable'
-
     }
 
 };
@@ -1924,9 +2033,7 @@ const receiptTransactions = {
 let currentTransaction = null;
 
 
-/* =========================================
-OPEN RECEIPT
-========================================= */
+/* OPEN RECEIPT */
 
 function openReceipt(transactionType){
 
@@ -1969,53 +2076,40 @@ function openReceipt(transactionType){
     const receiptScreen = document.getElementById('receiptScreen');
 
     receiptScreen.style.display = 'block';
-
     receiptScreen.scrollTop = 0;
 
     document.body.style.overflow = 'hidden';
-
 }
 
 
-/* =========================================
-CLOSE RECEIPT
-========================================= */
+/* CLOSE RECEIPT */
 
 function closeReceipt(){
 
     document.getElementById('receiptScreen').style.display = 'none';
 
     document.body.style.overflow = '';
-
 }
 
 
-/* =========================================
-RECEIPT NOTIFICATIONS
-========================================= */
+/* RECEIPT NOTIFICATIONS */
 
 function receiptNotify(message){
 
     const toast = document.getElementById('receiptToast');
 
     toast.textContent = message;
-
     toast.style.display = 'block';
 
     clearTimeout(window.receiptToastTimer);
 
     window.receiptToastTimer = setTimeout(()=>{
-
         toast.style.display = 'none';
-
     },2000);
-
 }
 
 
-/* =========================================
-COPY TRANSACTION REFERENCE
-========================================= */
+/* COPY TRANSACTION REFERENCE */
 
 async function copyReceiptReference(){
 
@@ -2030,8 +2124,6 @@ async function copyReceiptReference(){
         receiptNotify('Reference copied');
 
     }catch(error){
-
-        /* Clipboard fallback */
 
         try{
 
@@ -2054,15 +2146,11 @@ async function copyReceiptReference(){
             receiptNotify('Clipboard unavailable');
 
         }
-
     }
-
 }
 
 
-/* =========================================
-SHARE RECEIPT
-========================================= */
+/* SHARE RECEIPT */
 
 async function shareReceipt(){
 
@@ -2073,7 +2161,6 @@ async function shareReceipt(){
         if(navigator.share){
 
             await navigator.share({
-
                 title:'XRP Transaction Receipt',
 
                 text:
@@ -2081,7 +2168,6 @@ async function shareReceipt(){
                     '\nAmount: ' + currentTransaction.amount +
                     '\nDate: ' + currentTransaction.date +
                     '\nReference: ' + currentTransaction.reference
-
             });
 
         }else{
@@ -2093,42 +2179,29 @@ async function shareReceipt(){
     }catch(error){
 
         if(error.name !== 'AbortError'){
-
             receiptNotify('Sharing failed');
-
         }
-
     }
-
 }
 
 
-/* =========================================
-DOWNLOAD RECEIPT AS PNG
-========================================= */
+/* DOWNLOAD RECEIPT AS PNG */
 
 async function downloadReceipt(){
 
     try{
 
         if(!window.html2canvas){
-
             await loadHtml2Canvas();
-
         }
 
         const receipt = document.getElementById('receipt');
 
         const canvas = await html2canvas(receipt,{
-
             backgroundColor:'#000',
-
             scale:2,
-
             useCORS:true,
-
             logging:false
-
         });
 
         const image = canvas.toDataURL('image/png');
@@ -2136,7 +2209,6 @@ async function downloadReceipt(){
         const link = document.createElement('a');
 
         link.download = 'xrp-receipt.png';
-
         link.href = image;
 
         document.body.appendChild(link);
@@ -2154,13 +2226,10 @@ async function downloadReceipt(){
         receiptNotify('Image export failed');
 
     }
-
 }
 
 
-/* =========================================
-LOAD HTML2CANVAS
-========================================= */
+/* LOAD HTML2CANVAS */
 
 function loadHtml2Canvas(){
 
@@ -2172,19 +2241,15 @@ function loadHtml2Canvas(){
         'https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js';
 
         script.onload = resolve;
-
         script.onerror = reject;
 
         document.head.appendChild(script);
 
     });
-
 }
 
 
-/* =========================================
-PIN SCREEN CONTROLS
-========================================= */
+/* PIN SCREEN CONTROLS */
 
 (function(){
 
@@ -2228,7 +2293,6 @@ PIN SCREEN CONTROLS
             );
 
         });
-
     }
 
 
@@ -2352,9 +2416,7 @@ PIN SCREEN CONTROLS
 
 </script>
 
-<script
-src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js">
-</script>
+<script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
 
 </body>
 </html>
